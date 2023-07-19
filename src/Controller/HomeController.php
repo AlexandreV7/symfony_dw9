@@ -9,10 +9,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController {
-    #[Route('/', name: 'home')]
-    function home(UtilisateurRepository $ur): Response {
+    #[Route('/users/{id}', name: 'home')]
+    function home(int $id, UtilisateurRepository $ur): Response {
 
-        $utilisateur = $ur->find(1); // UN utilisateur : objet
+        $utilisateur = $ur->find($id); // UN utilisateur : objet
         // $utilisateur = $ur->findAll(); // Tableaux d'utilisateurs : array
         // $utilisateur = $ur->findBy([ // Tableaux d'utilisateurs : array
         //     'prenom' => 'Jordan'
