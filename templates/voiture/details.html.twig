@@ -1,0 +1,13 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+{{ voiture.marque}} {{ voiture.modele}}
+{% endblock title %}
+
+{% block body %}
+<h1>
+    {{ voiture.marque}} {{ voiture.modele}}
+</h1>
+
+Cette voiture a {{ voiture.km }} km au compteur.
+{% endblock body %}
