@@ -12,6 +12,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 #[Route('/voitures', name: 'app_voiture')]
 class VoitureController extends AbstractController {
@@ -23,7 +25,7 @@ class VoitureController extends AbstractController {
     }
 
     #[Route('/add', name: '_add')]
-    public function add(Request $request, EntityManagerInterface $em): Response {
+    public function add(Request $request, EntityManagerInterface $em, MailerInterface $mailer): Response {
         $voiture = new Voiture;
         $form = $this->createForm(VoitureType::class, $voiture);
         $form->handleRequest($request);
@@ -31,6 +33,16 @@ class VoitureController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($voiture);
             $em->flush();
+
+            if ($voiture->getUtilisateur()) {
+                $email = (new Email())
+                    ->from('monsite@yopmail.fr')
+                    ->to($voiture->getUtilisateur()->getEmail())
+                    ->subject('Nouvelle voiture')
+                    ->text('Vous avez une nouvelle voiture ! C\'est une ' . $voiture->getMarque() . ' ' . $voiture->getModele() . ' !');
+
+                $mailer->send($email);
+            }
 
             return $this->redirectToRoute('app_voiture_liste');
         }

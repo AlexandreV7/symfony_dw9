@@ -30,6 +30,9 @@ class Utilisateur
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Voiture::class)]
     private Collection $voitures;
 
+    #[ORM\Column(length: 255)]
+    private ?string $email = null;
+
     public function __construct()
     {
         $this->plats = new ArrayCollection();
@@ -139,5 +142,17 @@ class Utilisateur
 
     function getFullname(): string {
         return $this->prenom . ' ' . mb_strtoupper($this->nom);
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
+
+        return $this;
     }
 }
