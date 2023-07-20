@@ -2,15 +2,18 @@
 
 namespace App\Form;
 
-use App\Entity\Utilisateur;
 use App\Entity\Voiture;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\Utilisateur;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class VoitureType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options): void {
@@ -30,6 +33,14 @@ class VoitureType extends AbstractType {
                 'required' => false,
                 'multiple' => false,
                 'expanded' => false,
+            ])
+            ->add('image', FileType::class, [
+                'required' => false,
+                'mapped' => false,
+                'constraints' => [
+                    new Image,
+                    new File(maxSize: '5M')
+                ]
             ])
             ->add('envoyer', SubmitType::class);
     }

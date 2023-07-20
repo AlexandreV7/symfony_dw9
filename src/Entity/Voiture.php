@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\VoitureRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: VoitureRepository::class)]
@@ -24,6 +25,9 @@ class Voiture
 
     #[ORM\ManyToOne(inversedBy: 'voitures')]
     private ?Utilisateur $utilisateur = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $image = null;
 
     public function getId(): ?int
     {
@@ -74,6 +78,18 @@ class Voiture
     public function setUtilisateur(?Utilisateur $utilisateur): static
     {
         $this->utilisateur = $utilisateur;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
 
         return $this;
     }

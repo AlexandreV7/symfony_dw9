@@ -4,16 +4,17 @@ namespace App\Controller;
 
 use App\Entity\Voiture;
 use App\Form\VoitureType;
+use Symfony\Component\Mime\Email;
 use App\Repository\VoitureRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 #[Route('/voitures', name: 'app_voiture')]
 class VoitureController extends AbstractController {
@@ -31,6 +32,16 @@ class VoitureController extends AbstractController {
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile */
+            $img = $form->get('image')->getData();
+
+            if (!empty($img)) {
+                $nom = uniqid() . '.' . $img->guessExtension();
+                $dossier = __DIR__ . '/../../public/uploads/voitures';
+                $img->move($dossier, $nom);
+                $voiture->setImage($nom);
+            }
+
             $em->persist($voiture);
             $em->flush();
 
@@ -62,6 +73,16 @@ class VoitureController extends AbstractController {
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile */
+            $img = $form->get('image')->getData();
+
+            if (!empty($img)) {
+                $nom = uniqid() . '.' . $img->guessExtension();
+                $dossier = __DIR__ . '/../../public/uploads/voitures';
+                $img->move($dossier, $nom);
+                $voiture->setImage($nom);
+            }
+
             $em->persist($voiture);
             $em->flush();
 
@@ -70,7 +91,8 @@ class VoitureController extends AbstractController {
 
         return $this->render('voiture/formulaire.html.twig', [
             'titre' => 'Modifier une voiture',
-            'formulaire' => $form->createView()
+            'formulaire' => $form->createView(),
+            'voiture' => $voiture
         ]);
     }
 
