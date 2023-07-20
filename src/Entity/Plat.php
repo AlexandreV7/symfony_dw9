@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\PlatRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\PlatRepository;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: PlatRepository::class)]
 class Plat
@@ -14,6 +15,7 @@ class Plat
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[NotBlank]
     private ?string $nom = null;
 
     #[ORM\ManyToOne(inversedBy: 'plats')]
