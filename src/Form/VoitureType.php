@@ -2,7 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\Utilisateur;
 use App\Entity\Voiture;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -21,6 +23,13 @@ class VoitureType extends AbstractType {
             ])
             ->add('km', IntegerType::class, [
                 'label' => 'Kilométrage'
+            ])
+            ->add('utilisateur', EntityType::class, [
+                'class' => Utilisateur::class,
+                'choice_label' => 'fullname',
+                'required' => false,
+                'multiple' => false,
+                'expanded' => false,
             ])
             ->add('envoyer', SubmitType::class);
     }

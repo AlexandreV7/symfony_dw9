@@ -27,9 +27,13 @@ class Utilisateur
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Plat::class, orphanRemoval: true)]
     private Collection $plats;
 
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Voiture::class)]
+    private Collection $voitures;
+
     public function __construct()
     {
         $this->plats = new ArrayCollection();
+        $this->voitures = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -101,5 +105,39 @@ class Utilisateur
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Voiture>
+     */
+    public function getVoitures(): Collection
+    {
+        return $this->voitures;
+    }
+
+    public function addVoiture(Voiture $voiture): static
+    {
+        if (!$this->voitures->contains($voiture)) {
+            $this->voitures->add($voiture);
+            $voiture->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVoiture(Voiture $voiture): static
+    {
+        if ($this->voitures->removeElement($voiture)) {
+            // set the owning side to null (unless already changed)
+            if ($voiture->getUtilisateur() === $this) {
+                $voiture->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    function getFullname(): string {
+        return $this->prenom . ' ' . mb_strtoupper($this->nom);
     }
 }

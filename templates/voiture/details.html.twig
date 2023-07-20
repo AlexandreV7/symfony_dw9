@@ -9,5 +9,9 @@
     {{ voiture.marque}} {{ voiture.modele}}
 </h1>
 
-Cette voiture a {{ voiture.km }} km au compteur.
+<p>Cette voiture a {{ voiture.km }} km au compteur.</p>
+
+{% if voiture.utilisateur %}
+<p>Cette voiture appartient à {{ voiture.utilisateur.fullname }}.</p>
+{% endif %}
 {% endblock body %}

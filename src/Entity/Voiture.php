@@ -22,6 +22,9 @@ class Voiture
     #[ORM\Column]
     private ?int $km = null;
 
+    #[ORM\ManyToOne(inversedBy: 'voitures')]
+    private ?Utilisateur $utilisateur = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +62,18 @@ class Voiture
     public function setKm(int $km): static
     {
         $this->km = $km;
+
+        return $this;
+    }
+
+    public function getUtilisateur(): ?Utilisateur
+    {
+        return $this->utilisateur;
+    }
+
+    public function setUtilisateur(?Utilisateur $utilisateur): static
+    {
+        $this->utilisateur = $utilisateur;
 
         return $this;
     }
