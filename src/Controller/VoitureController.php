@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -66,7 +67,7 @@ class VoitureController extends AbstractController {
     }
 
     #[Route('/update/{id}', name: '_update')]
-    function update($id, VoitureRepository $vr, Request $request, EntityManagerInterface $em) {
+    function update($id, VoitureRepository $vr, Filesystem $fs, Request $request, EntityManagerInterface $em) {
         $voiture = $vr->find($id);
 
         $form = $this->createForm(VoitureType::class, $voiture);
@@ -80,6 +81,11 @@ class VoitureController extends AbstractController {
                 $nom = uniqid() . '.' . $img->guessExtension();
                 $dossier = __DIR__ . '/../../public/uploads/voitures';
                 $img->move($dossier, $nom);
+
+                if ($voiture->getImage()) {
+                    $fs->remove($dossier . '/' . $voiture->getImage());
+                }
+
                 $voiture->setImage($nom);
             }
 
@@ -106,10 +112,15 @@ class VoitureController extends AbstractController {
     }
 
     #[Route('/delete/{voiture}', name: '_delete')]
-    function delete(Voiture $voiture, Request $request, EntityManagerInterface $em) {
+    function delete(Voiture $voiture, Filesystem $fs, Request $request, EntityManagerInterface $em) {
         if (!$this->isCsrfTokenValid('delete', $request->query->get('token'))) {
             // Protection CSRF "à la mano"
             throw new AccessDeniedHttpException;
+        }
+
+        if ($voiture->getImage()) {
+            $dossier = __DIR__ . '/../../public/uploads/voitures';
+            $fs->remove($dossier . '/' . $voiture->getImage());
         }
 
         // Symfony, grâce au typage et à l'injection de dépendance
