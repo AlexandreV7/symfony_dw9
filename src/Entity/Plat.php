@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\PlatRepository;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -21,6 +22,9 @@ class Plat
     #[ORM\ManyToOne(inversedBy: 'plats')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Utilisateur $utilisateur = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $image = null;
 
     public function getId(): ?int
     {
@@ -47,6 +51,18 @@ class Plat
     public function setUtilisateur(?Utilisateur $utilisateur): static
     {
         $this->utilisateur = $utilisateur;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
 
         return $this;
     }
