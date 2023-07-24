@@ -2,11 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
+use App\Entity\Plat;
+use App\Entity\Voiture;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
@@ -39,6 +43,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
 
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Plat::class, orphanRemoval: true)]
+    private Collection $plats;
+
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Voiture::class)]
+    private Collection $voitures;
+
 
     public function getId(): ?int {
         return $this->id;
@@ -52,6 +62,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->email = $email;
 
         return $this;
+    }
+    public function __construct()
+    {
+        $this->plats = new ArrayCollection();
+        $this->voitures = new ArrayCollection();
     }
 
     /**
@@ -165,5 +180,68 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->isVerified = $isVerified;
 
         return $this;
+    }
+    /**
+     * @return Collection<int, Plat>
+     */
+    public function getPlats(): Collection
+    {
+        return $this->plats;
+    }
+
+    public function addPlat(Plat $plat): static
+    {
+        if (!$this->plats->contains($plat)) {
+            $this->plats->add($plat);
+            $plat->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlat(Plat $plat): static
+    {
+        if ($this->plats->removeElement($plat)) {
+            // set the owning side to null (unless already changed)
+            if ($plat->getUtilisateur() === $this) {
+                $plat->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Voiture>
+     */
+    public function getVoitures(): Collection
+    {
+        return $this->voitures;
+    }
+
+    public function addVoiture(Voiture $voiture): static
+    {
+        if (!$this->voitures->contains($voiture)) {
+            $this->voitures->add($voiture);
+            $voiture->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVoiture(Voiture $voiture): static
+    {
+        if ($this->voitures->removeElement($voiture)) {
+            // set the owning side to null (unless already changed)
+            if ($voiture->getUtilisateur() === $this) {
+                $voiture->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    function getFullname(): string {
+        return $this->prenom . ' ' . mb_strtoupper($this->nom);
     }
 }

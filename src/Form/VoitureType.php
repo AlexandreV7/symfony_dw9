@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Voiture;
-use App\Entity\Utilisateur;
+use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -28,7 +28,7 @@ class VoitureType extends AbstractType {
                 'label' => 'Kilométrage'
             ])
             ->add('utilisateur', EntityType::class, [
-                'class' => Utilisateur::class,
+                'class' => User::class,
                 'choice_label' => 'fullname',
                 'required' => false,
                 'multiple' => false,

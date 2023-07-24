@@ -24,7 +24,7 @@ class Voiture
     private ?int $km = null;
 
     #[ORM\ManyToOne(inversedBy: 'voitures')]
-    private ?Utilisateur $utilisateur = null;
+    private ?User $utilisateur = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $image = null;
@@ -70,12 +70,12 @@ class Voiture
         return $this;
     }
 
-    public function getUtilisateur(): ?Utilisateur
+    public function getUtilisateur(): ?User
     {
         return $this->utilisateur;
     }
 
-    public function setUtilisateur(?Utilisateur $utilisateur): static
+    public function setUtilisateur(?User $utilisateur): static
     {
         $this->utilisateur = $utilisateur;
 
