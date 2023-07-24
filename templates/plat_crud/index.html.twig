@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Plat index{% endblock %}
+
+{% block body %}
+<h1>Plat index</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nom</th>
+            <th>Image</th>
+            <th>actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for plat in plats %}
+        <tr>
+            <td>{{ plat.id }}</td>
+            <td>{{ plat.nom }}</td>
+            <td>{{ plat.image }}</td>
+            <td>
+                {% if app.user == plat.utilisateur %}
+                <a href="{{ path('app_plat_crud_show', {'id': plat.id}) }}">show</a>
+                <a href="{{ path('app_plat_crud_edit', {'id': plat.id}) }}">edit</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="4">no records found</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if app.user %}
+<a href="{{ path('app_plat_crud_new') }}">Create new</a>
+{% endif %}
+{% endblock %}

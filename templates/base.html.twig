@@ -25,12 +25,12 @@
 
         {% if is_granted('ROLE_ADMIN') %}
         <a href="{{ path('app_voiture_add') }}">Ajouter une voiture</a>
-        <a href="{{ path('app_plat_add') }}">Ajouter un plat</a>
         {% endif %}
-
+        
         <a href="{{ path('app_contact') }}">Contact</a>
-
-        {% if app.user %}
+        
+        {% if is_granted('ROLE_USER') %}
+        <a href="{{ path('app_plat_add') }}">Ajouter un plat</a>
         <a href="{{ path('app_logout') }}">Se déconnecter</a>
         {% else %}
         <a href="{{ path('app_login') }}">Se connecter</a>

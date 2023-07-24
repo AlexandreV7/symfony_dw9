@@ -16,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/voitures', name: 'app_voiture')]
 class VoitureController extends AbstractController {
@@ -26,6 +27,7 @@ class VoitureController extends AbstractController {
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/add', name: '_add')]
     public function add(Request $request, EntityManagerInterface $em, MailerInterface $mailer): Response {
         $voiture = new Voiture;
@@ -66,6 +68,7 @@ class VoitureController extends AbstractController {
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/update/{id}', name: '_update')]
     function update($id, VoitureRepository $vr, Filesystem $fs, Request $request, EntityManagerInterface $em) {
         $voiture = $vr->find($id);
@@ -111,6 +114,7 @@ class VoitureController extends AbstractController {
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/delete/{voiture}', name: '_delete')]
     function delete(Voiture $voiture, Filesystem $fs, Request $request, EntityManagerInterface $em) {
         if (!$this->isCsrfTokenValid('delete', $request->query->get('token'))) {
