@@ -7,21 +7,18 @@ use App\Repository\VoitureRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class HomeController extends AbstractController {
-    #[Route('/users/{id}', name: 'home')]
-    function home(int $id, UtilisateurRepository $ur): Response {
+    #[IsGranted('ROLE_USER')]
+    #[Route('/users/me', name: 'home_bizarre')]
+    function home(): Response {
 
-        $utilisateur = $ur->find($id); // UN utilisateur : objet
-        // $utilisateur = $ur->findAll(); // Tableaux d'utilisateurs : array
-        // $utilisateur = $ur->findBy([ // Tableaux d'utilisateurs : array
-        //     'prenom' => 'Jordan'
-        // ]);
-        // $utilisateur = $ur->findOneBy([ // UN utilisateur : objet
-        //     'prenom' => 'Jordan'
-        // ]);
+        $this->isGranted('ROLE_USER'); // booléen
+        $this->denyAccessUnlessGranted('ROLE_USER'); // Lance une exception si pas granted
 
-        // J'appelle la vue
+        $utilisateur = $this->getUser();
+
         return $this->render(
             'home.html.twig', // string : le nom de la vue
             [
@@ -30,5 +27,10 @@ class HomeController extends AbstractController {
                 'utilisateur' => $utilisateur
             ]
         );
+    }
+
+    #[Route('/', name: 'home')]
+    function vraieHome(): Response {
+        return $this->render('vraie_home.html.twig');
     }
 }
