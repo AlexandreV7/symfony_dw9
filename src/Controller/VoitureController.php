@@ -4,26 +4,30 @@ namespace App\Controller;
 
 use App\Entity\Voiture;
 use App\Form\VoitureType;
+use Symfony\Component\Mime\Email;
 use App\Repository\VoitureRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/voitures', name: 'app_voiture')]
 class VoitureController extends AbstractController {
     #[Route('/', name: '_liste')]
     public function liste(VoitureRepository $vr): Response {
         return $this->render('voiture/liste.html.twig', [
-            'voitures' => $vr->findAll(),
+            'voitures' => $vr->findAllAvecUtilisateurs(),
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/add', name: '_add')]
     public function add(Request $request, EntityManagerInterface $em, MailerInterface $mailer): Response {
         $voiture = new Voiture;
@@ -31,6 +35,16 @@ class VoitureController extends AbstractController {
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile */
+            $img = $form->get('image')->getData();
+
+            if (!empty($img)) {
+                $nom = uniqid() . '.' . $img->guessExtension();
+                $dossier = __DIR__ . '/../../public/uploads/voitures';
+                $img->move($dossier, $nom);
+                $voiture->setImage($nom);
+            }
+
             $em->persist($voiture);
             $em->flush();
 
@@ -54,14 +68,30 @@ class VoitureController extends AbstractController {
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/update/{id}', name: '_update')]
-    function update($id, VoitureRepository $vr, Request $request, EntityManagerInterface $em) {
+    function update($id, VoitureRepository $vr, Filesystem $fs, Request $request, EntityManagerInterface $em) {
         $voiture = $vr->find($id);
 
         $form = $this->createForm(VoitureType::class, $voiture);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile */
+            $img = $form->get('image')->getData();
+
+            if (!empty($img)) {
+                $nom = uniqid() . '.' . $img->guessExtension();
+                $dossier = __DIR__ . '/../../public/uploads/voitures';
+                $img->move($dossier, $nom);
+
+                if ($voiture->getImage()) {
+                    $fs->remove($dossier . '/' . $voiture->getImage());
+                }
+
+                $voiture->setImage($nom);
+            }
+
             $em->persist($voiture);
             $em->flush();
 
@@ -70,7 +100,8 @@ class VoitureController extends AbstractController {
 
         return $this->render('voiture/formulaire.html.twig', [
             'titre' => 'Modifier une voiture',
-            'formulaire' => $form->createView()
+            'formulaire' => $form->createView(),
+            'voiture' => $voiture
         ]);
     }
 
@@ -83,11 +114,17 @@ class VoitureController extends AbstractController {
         ]);
     }
 
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/delete/{voiture}', name: '_delete')]
-    function delete(Voiture $voiture, Request $request, EntityManagerInterface $em) {
+    function delete(Voiture $voiture, Filesystem $fs, Request $request, EntityManagerInterface $em) {
         if (!$this->isCsrfTokenValid('delete', $request->query->get('token'))) {
             // Protection CSRF "à la mano"
             throw new AccessDeniedHttpException;
+        }
+
+        if ($voiture->getImage()) {
+            $dossier = __DIR__ . '/../../public/uploads/voitures';
+            $fs->remove($dossier . '/' . $voiture->getImage());
         }
 
         // Symfony, grâce au typage et à l'injection de dépendance

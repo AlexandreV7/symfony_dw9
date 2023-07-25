@@ -3,13 +3,20 @@
 {% block title %}{{ titre }}{% endblock title %}
 
 {% block body %}
-    <h1>{{ titre }}</h1>
+<h1>{{ titre }}</h1>
 
-    {% for message in app.flashes('success') %}
-        <div class="text-success">
-            {{ message }}
-        </div>
-    {% endfor %}
+{% for message in app.flashes('success') %}
+<div class="text-success">
+    {{ message }}
+</div>
+{% endfor %}
+
+
+<div class="grid grid-cols-2">
+    {% if voiture and voiture.image %}
+    <img src="/uploads/voitures/{{ voiture.image }}" class="object-cover" alt="">
+    {% endif %}
 
     {{ form(formulaire) }}
+</div>
 {% endblock body %}

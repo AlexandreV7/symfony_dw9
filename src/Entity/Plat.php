@@ -8,8 +8,7 @@ use App\Repository\PlatRepository;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: PlatRepository::class)]
-class Plat
-{
+class Plat {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -21,47 +20,44 @@ class Plat
 
     #[ORM\ManyToOne(inversedBy: 'plats')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $utilisateur = null;
+    private ?User $utilisateur = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $image = null;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getNom(): ?string
-    {
+    function __toString() {
         return $this->nom;
     }
 
-    public function setNom(string $nom): static
-    {
+    public function getId(): ?int {
+        return $this->id;
+    }
+
+    public function getNom(): ?string {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): static {
         $this->nom = $nom;
 
         return $this;
     }
 
-    public function getUtilisateur(): ?Utilisateur
-    {
+    public function getUtilisateur(): ?User {
         return $this->utilisateur;
     }
 
-    public function setUtilisateur(?Utilisateur $utilisateur): static
-    {
+    public function setUtilisateur(?User $utilisateur): static {
         $this->utilisateur = $utilisateur;
 
         return $this;
     }
 
-    public function getImage(): ?string
-    {
+    public function getImage(): ?string {
         return $this->image;
     }
 
-    public function setImage(?string $image): static
-    {
+    public function setImage(?string $image): static {
         $this->image = $image;
 
         return $this;

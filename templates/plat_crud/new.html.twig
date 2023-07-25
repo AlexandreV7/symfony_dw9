@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Plat{% endblock %}
+
+{% block body %}
+    <h1>Create new Plat</h1>
+
+    {{ include('plat_crud/_form.html.twig') }}
+
+    <a href="{{ path('app_plat_crud_index') }}">back to list</a>
+{% endblock %}

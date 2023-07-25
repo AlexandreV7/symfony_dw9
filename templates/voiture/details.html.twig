@@ -5,13 +5,25 @@
 {% endblock title %}
 
 {% block body %}
-<h1>
-    {{ voiture.marque}} {{ voiture.modele}}
-</h1>
 
-<p>Cette voiture a {{ voiture.km }} km au compteur.</p>
+<div class="grid grid-cols-3">
+    {% if voiture.image %}
+    <img src="/uploads/voitures/{{ voiture.image }}" alt="">
+    {% else %}
+    <img src="https://placehold.jp/500x500.jpg" alt="">
+    {% endif %}
 
-{% if voiture.utilisateur %}
-<p>Cette voiture appartient à {{ voiture.utilisateur.fullname }}.</p>
-{% endif %}
+    <div class="col-span-2">
+        <h1>
+            {{ voiture.marque}} {{ voiture.modele}}
+        </h1>
+        
+        <p>Cette voiture a {{ voiture.km }} km au compteur.</p>
+        
+        {% if voiture.utilisateur %}
+        <p>Cette voiture appartient à {{ voiture.utilisateur.fullname }}.</p>
+        {% endif %}
+    </div>
+</div>
+
 {% endblock body %}
