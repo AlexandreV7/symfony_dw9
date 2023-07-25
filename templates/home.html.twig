@@ -8,10 +8,10 @@
 
 <p>Bonjour, je m'appelle {{ utilisateur.prenom }} {{ utilisateur.nom|upper }}, et j'ai {{ utilisateur.age }} ans. Voici des plats que j'aime :</p>
 
-{# <ul>
+<ul>
     {% for plat in utilisateur.plats %}
         <li> <img src="{{ asset('uploads/plats/' ~ plat.image) }}" style="width: 50px; height: 50px; object-fit: cover"> {{ plat.nom }}</li>
     {% endfor %}
-</ul> #}
+</ul>
 
 {% endblock %}

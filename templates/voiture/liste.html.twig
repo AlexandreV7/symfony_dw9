@@ -10,6 +10,11 @@
 <div>
     <h2>{{v.marque}} {{v.modele}}</h2>
     <p>{{v.km}} km au compteur</p>
+
+    {% if v.utilisateur %}
+        <p>Cette voiture appartient à {{ v.utilisateur.fullname }}.</p>
+    {% endif %}
+
     <p>
         {% if is_granted('ROLE_ADMIN') %}
         <a href="{{ path('app_voiture_update' , { id: v.id }) }}" class="btn btn-warning">

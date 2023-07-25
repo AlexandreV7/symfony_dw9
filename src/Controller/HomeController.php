@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\VoitureRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,5 +31,11 @@ class HomeController extends AbstractController {
     #[Route('/', name: 'home')]
     function vraieHome(): Response {
         return $this->render('vraie_home.html.twig');
+    }
+
+    #[Route('/test', name: 'home')]
+    function test(VoitureRepository $vr): Response {
+        $voitures = $vr->recupererLesVoituresQueJeVeux(100000);
+        dd($voitures);
     }
 }

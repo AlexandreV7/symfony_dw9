@@ -23,7 +23,7 @@ class VoitureController extends AbstractController {
     #[Route('/', name: '_liste')]
     public function liste(VoitureRepository $vr): Response {
         return $this->render('voiture/liste.html.twig', [
-            'voitures' => $vr->findAll(),
+            'voitures' => $vr->findAllAvecUtilisateurs(),
         ]);
     }
 
