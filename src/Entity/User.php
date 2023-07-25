@@ -49,6 +49,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Voiture::class)]
     private Collection $voitures;
 
+    function __toString() {
+        return $this->getFullname();
+    }
 
     public function getId(): ?int {
         return $this->id;
@@ -63,8 +66,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
 
         return $this;
     }
-    public function __construct()
-    {
+    public function __construct() {
         $this->plats = new ArrayCollection();
         $this->voitures = new ArrayCollection();
     }
@@ -170,13 +172,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this;
     }
 
-    public function isVerified(): bool
-    {
+    public function isVerified(): bool {
         return $this->isVerified;
     }
 
-    public function setIsVerified(bool $isVerified): static
-    {
+    public function setIsVerified(bool $isVerified): static {
         $this->isVerified = $isVerified;
 
         return $this;
@@ -184,13 +184,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     /**
      * @return Collection<int, Plat>
      */
-    public function getPlats(): Collection
-    {
+    public function getPlats(): Collection {
         return $this->plats;
     }
 
-    public function addPlat(Plat $plat): static
-    {
+    public function addPlat(Plat $plat): static {
         if (!$this->plats->contains($plat)) {
             $this->plats->add($plat);
             $plat->setUtilisateur($this);
@@ -199,8 +197,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this;
     }
 
-    public function removePlat(Plat $plat): static
-    {
+    public function removePlat(Plat $plat): static {
         if ($this->plats->removeElement($plat)) {
             // set the owning side to null (unless already changed)
             if ($plat->getUtilisateur() === $this) {
@@ -214,13 +211,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     /**
      * @return Collection<int, Voiture>
      */
-    public function getVoitures(): Collection
-    {
+    public function getVoitures(): Collection {
         return $this->voitures;
     }
 
-    public function addVoiture(Voiture $voiture): static
-    {
+    public function addVoiture(Voiture $voiture): static {
         if (!$this->voitures->contains($voiture)) {
             $this->voitures->add($voiture);
             $voiture->setUtilisateur($this);
@@ -229,8 +224,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this;
     }
 
-    public function removeVoiture(Voiture $voiture): static
-    {
+    public function removeVoiture(Voiture $voiture): static {
         if ($this->voitures->removeElement($voiture)) {
             // set the owning side to null (unless already changed)
             if ($voiture->getUtilisateur() === $this) {

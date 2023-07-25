@@ -7,8 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: VoitureRepository::class)]
-class Voiture
-{
+class Voiture {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -29,66 +28,60 @@ class Voiture
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $image = null;
 
-    public function getId(): ?int
-    {
+    function __toString() {
+        return $this->marque . ' ' . $this->modele;
+    }
+
+
+    public function getId(): ?int {
         return $this->id;
     }
 
-    public function getMarque(): ?string
-    {
+    public function getMarque(): ?string {
         return $this->marque;
     }
 
-    public function setMarque(string $marque): static
-    {
+    public function setMarque(string $marque): static {
         $this->marque = $marque;
 
         return $this;
     }
 
-    public function getModele(): ?string
-    {
+    public function getModele(): ?string {
         return $this->modele;
     }
 
-    public function setModele(string $modele): static
-    {
+    public function setModele(string $modele): static {
         $this->modele = $modele;
 
         return $this;
     }
 
-    public function getKm(): ?int
-    {
+    public function getKm(): ?int {
         return $this->km;
     }
 
-    public function setKm(int $km): static
-    {
+    public function setKm(int $km): static {
         $this->km = $km;
 
         return $this;
     }
 
-    public function getUtilisateur(): ?User
-    {
+    public function getUtilisateur(): ?User {
         return $this->utilisateur;
     }
 
-    public function setUtilisateur(?User $utilisateur): static
-    {
+    public function setUtilisateur(?User $utilisateur): static {
         $this->utilisateur = $utilisateur;
 
         return $this;
     }
 
-    public function getImage(): ?string
-    {
+    public function getImage(): ?string {
         return $this->image;
     }
 
-    public function setImage(?string $image): static
-    {
+    public function setImage(?string $image): static {
         $this->image = $image;
 
         return $this;
